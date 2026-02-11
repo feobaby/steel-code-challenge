@@ -1,0 +1,29 @@
+{
+  "name": "steel-code-challenge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/cli.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ai": "^6.0.78",
+    "boxen": "^8.0.1",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "dotenv": "^17.2.4",
+    "inquirer": "^13.2.2",
+    "openai": "^6.21.0",
+    "ora": "^9.3.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.0",
+    "prettier": "^3.8.1"
+  }
+}
