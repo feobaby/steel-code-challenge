@@ -1,4 +1,7 @@
 import { execSync } from 'child_process';
+import { writeFileSync, readFileSync, unlinkSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import {
   failSpinner,
   startSpinner,
@@ -30,61 +33,74 @@ export async function analyzeStaged() {
     });
 
     return new Promise((resolve) => {
-      logger.log('\nPress Enter to accept, or type your own message (press Enter twice to finish):');
-      process.stdout.write('> ');
-      
-      const lines = [];
-      let lastLineEmpty = false;
-      let isFirstLine = true;
-
-      rl.on('line', (line) => {
-        // If user presses Enter on empty line and we already have content
-        if (line === '' && lines.length > 0) {
-          // Check if the last line was also empty (double Enter)
-          if (lastLineEmpty) {
-            rl.close();
-            return;
-          }
-          lastLineEmpty = true;
-          lines.push(line);
-          process.stdout.write('  '); // Two spaces instead of "> "
-        } 
-        // If first line is empty, use the suggested message
-        else if (line === '' && lines.length === 0) {
+      rl.question(
+        '\nOptions:\n  1. Press Enter to accept\n  2. Type a message (single line only)\n  3. Type "edit" to open in editor\n> ',
+        (answer) => {
           rl.close();
-        } 
-        // Regular line input
-        else {
-          lastLineEmpty = false;
-          lines.push(line);
-          // After first line, use spaces instead of "> "
-          if (isFirstLine) {
-            isFirstLine = false;
+          
+          const trimmedAnswer = answer.trim();
+          
+          // Option 3: Open in editor
+          if (trimmedAnswer.toLowerCase() === 'edit') {
+            const tempFile = join(tmpdir(), `COMMIT_EDITMSG_${Date.now()}`);
+            
+            // Write suggested message to temp file
+            writeFileSync(tempFile, result.message);
+            
+            try {
+              // Open editor (respects EDITOR env var, falls back to vi/vim/nano)
+              const editor = process.env.EDITOR || process.env.VISUAL || 'vi';
+              execSync(`${editor} ${tempFile}`, { stdio: 'inherit' });
+              
+              // Read the edited message
+              const finalMessage = readFileSync(tempFile, 'utf-8').trim();
+              unlinkSync(tempFile);
+              
+              if (!finalMessage) {
+                logger.log('\nEmpty commit message. Commit cancelled.');
+                resolve();
+                return;
+              }
+              
+              execSync(`git commit -m "${finalMessage.replace(/"/g, '\\"')}"`, {
+                stdio: 'inherit',
+              });
+              succeedSpinner('Commit Successful!');
+              resolve();
+            } catch (error) {
+              try { unlinkSync(tempFile); } catch { /* empty */ }
+              failSpinner(`Commit failed: ${error.message}`);
+              process.exit(1);
+            }
           }
-          process.stdout.write('  '); // Two spaces for continuation lines
+          // Option 1: Accept suggestion (empty input)
+          else if (trimmedAnswer === '') {
+            try {
+              execSync(`git commit -m "${result.message.replace(/"/g, '\\"')}"`, {
+                stdio: 'inherit',
+              });
+              succeedSpinner('Commit Successful!');
+              resolve();
+            } catch (error) {
+              failSpinner(`Commit failed: ${error.message}`);
+              process.exit(1);
+            }
+          }
+          // Option 2: Custom single-line message
+          else {
+            try {
+              execSync(`git commit -m "${trimmedAnswer.replace(/"/g, '\\"')}"`, {
+                stdio: 'inherit',
+              });
+              succeedSpinner('Commit Successful!');
+              resolve();
+            } catch (error) {
+              failSpinner(`Commit failed: ${error.message}`);
+              process.exit(1);
+            }
+          }
         }
-      });
-
-      rl.on('close', () => {
-        // Remove trailing empty lines
-        while (lines.length > 0 && lines[lines.length - 1] === '') {
-          lines.pop();
-        }
-        
-        const userMessage = lines.join('\n').trim();
-        const finalMessage = userMessage || result.message;
-
-        try {
-          execSync(`git commit -m "${finalMessage.replace(/"/g, '\\"')}"`, {
-            stdio: 'inherit',
-          });
-          succeedSpinner('Commit Successful!');
-          resolve();
-        } catch (error) {
-          failSpinner(`Commit failed: ${error.message}`);
-          process.exit(1);
-        }
-      });
+      );
     });
   } catch (error) {
     failSpinner('Analysis failed');
@@ -92,14 +108,3 @@ export async function analyzeStaged() {
     process.exit(1);
   }
 }
-// ```
-
-// **Key change:**
-// - Changed `process.stdout.write('> ');` to `process.stdout.write('  ');` for continuation lines (after the first line)
-// - Only the first line shows `>`, subsequent lines just have spaces for indentation
-
-// **Now it will look like:**
-// ```
-// > refactor
-//   - change a file
-//   - refactor this add.js file
