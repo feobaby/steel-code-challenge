@@ -1,64 +1,74 @@
-import { simpleGit } from 'simple-git';
 import os from 'os';
 import path from 'path';
 import fs from 'fs/promises';
+import chalk from 'chalk';
+import { execSync } from 'child_process';
+import { failSpinner } from '../utils/spinner.js';
+import { logger } from '../utils/logger.js';
 
-export async function getLocalCommits(count = 50) {
-  const git = simpleGit();
-  const isRepo = await git.checkIsRepo();
-  if (!isRepo) throw new Error('Not a local git repository.');
-
-  const log = await git.log({ maxCount: count });
-  return log.all.map((c) => c.message);
+export function getLocalCommits(count) {
+  try {
+    const log = execSync(`git log -n ${count} --pretty=format:%B%x00`, {
+      encoding: 'utf-8',
+    });
+    const commits = log
+      .split('\0')
+      .filter(Boolean)
+      .map((msg) => msg.trim());
+    return commits;
+  } catch (error) {
+    failSpinner(chalk.red('Failed to fetch local commits.'));
+    logger.error(error.message);
+    throw error;
+  }
 }
 
-export async function getRemoteCommits(url, count = 50) {
-  // Create a temporary directory
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'steel-git-'));
-
+export async function getRemoteCommits(url, count) {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'git-audit-'));
   try {
-    const git = simpleGit();
+    execSync(
+      `git clone --bare --depth ${count} --filter=blob:none --no-tags ${url} ${tempDir}`,
+      { stdio: 'ignore' },
+    );
 
-    // Bare + shallow clone (fastest local clone)
-    await git.clone(url, tempDir, [
-      '--bare', // Skip working tree
-      '--depth',
-      count.toString(), // Only last N commits
-      '--filter=blob:none', // Skip file contents
-      '--no-tags', // Optional: don't fetch tags
-    ]);
+    const logOutput = execSync(
+      `git --git-dir="${tempDir}" log -n ${count} --pretty=format:"%B%x00"`,
+      { encoding: 'utf-8' },
+    );
 
-    const remoteGit = simpleGit(tempDir);
+    const commits = logOutput
+      .split('\0')
+      .map((msg) => msg.trim())
+      .filter(Boolean);
 
-    // Get commit logs (only metadata)
-    const log = await remoteGit.log({
-      maxCount: count,
-      format: {
-        hash: '%H',
-        message: '%s',
-        body: '%b',
-        author_name: '%an',
-        author_email: '%ae',
-        date: '%ad',
-      },
-    });
-
-    // Preprocess for LLM
-    return log.all.map((c) => ({
-      sha: c.hash,
-      message: c.message,
-      summary:
-        c.message.length > 80 ? c.message.slice(0, 77) + '...' : c.message,
-      body: c.body,
-      author: `${c.author_name} <${c.author_email}>`,
-      date: c.date,
-    }));
+    return commits;
+  } catch (error) {
+    failSpinner('Failed to fetch remote commits');
+    logger.error(error.message);
+    throw error;
   } finally {
-    try {
-      // Optional: skip removal if speed is priority
-      await fs.rm(tempDir, { recursive: true, force: true });
-    } catch {
-      // Silent fail
+    await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
+  }
+}
+
+export function getStagedDiff() {
+  try {
+    const diff = execSync('git diff --staged', { encoding: 'utf-8' });
+    if (!diff.trim()) {
+      failSpinner('No staged changes found. Try using `git add` first.');
+      process.exit(1);
     }
+
+    const stats = execSync('git diff --staged --stat', { encoding: 'utf-8' });
+    const lines = stats.split('\n').filter(Boolean);
+    const summary = lines[lines.length - 1] || 'unknown changes';
+
+    logger.log(`Analyzing staged changes... (${summary.trim()})\n`);
+
+    return diff;
+  } catch (error) {
+    failSpinner('Failed to get staged diff.');
+    logger.error(error.message);
+    throw error;
   }
 }

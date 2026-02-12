@@ -32,3 +32,10 @@ export const AnalysisSchema = z.object({
     .catch([])
     .default([]),
 });
+
+export const writeCommitSchema = z.object({
+  changes: z.array(z.string()).describe('List of detected changes'),
+  message: z
+    .string()
+    .describe('Suggested commit message in conventional format'),
+});

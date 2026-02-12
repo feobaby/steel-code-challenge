@@ -1,21 +1,20 @@
-// import readline from 'readline';
 import {
   failSpinner,
   startSpinner,
   stopSpinner,
   succeedSpinner,
 } from '../utils/spinner.js';
-import { getStagedChanges } from '../ai/service.js';
+import { writeCommits } from '../ai/service.js';
 import { logger } from '../utils/logger.js';
 import { executeCommit, promptForCommitMessage } from './commit.js';
 
 export async function analyzeStaged() {
   try {
     startSpinner('Hold on ...');
-    const result = await getStagedChanges();
+    const result = await writeCommits();
 
     logger.log('\nChanges detected:');
-    result.changes?.forEach((change) => console.log(`- ${change}`));
+    result.changes?.forEach((change) => logger.log(`- ${change}`));
 
     logger.log('\nSuggested commit message:');
     logger.log('━'.repeat(30));
@@ -31,8 +30,10 @@ export async function analyzeStaged() {
       succeedSpinner('Commit Successful!');
     }
   } catch (error) {
-    failSpinner('Analysis failed');
+    failSpinner(
+      'Failed to generate commit message. Try again or write manually.',
+    );
     logger.log(error.message);
-    process.exit(1);
+    throw error;
   }
 }
