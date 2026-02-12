@@ -1,40 +1,68 @@
 import { execSync } from 'child_process';
-import { readFileSync, unlinkSync } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
 import { succeedSpinner, failSpinner } from '../utils/spinner.js';
-import { logger } from '../utils/logger.js';
+import { select, input } from '@inquirer/prompts';
 
-import { createInterface } from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-
+/**
+ * Prompts the user for a commit message with options
+ */
 export async function promptForCommitMessage(suggestedMessage) {
-  const rl = createInterface({ input, output });
+  const action = await select({
+    message: 'How would you like to proceed?',
+    choices: [
+      {
+        name: `Accept AI suggestion: "${suggestedMessage}"`,
+        value: 'accept',
+        description: 'Use the AI-generated commit message',
+      },
+      {
+        name: 'Type my own message',
+        value: 'custom',
+        description: 'Write a custom commit message',
+      },
+      {
+        name: 'Open git editor',
+        value: 'editor',
+        description: 'Open your default editor for a detailed message',
+      },
+    ],
+  });
 
-  try {
-    const answer = await rl.question(
-      'Press Enter to accept, or type your own message:\n> ',
-    );
-    rl.close(); // Close immediately after getting answer
+  if (action === 'accept') {
+    return suggestedMessage;
+  }
 
-    const trimmedAnswer = answer.trim();
-
-    if (trimmedAnswer.toLowerCase() === 'git commit') {
-      try {
-        execSync('git commit', { stdio: 'inherit' });
-        return null;
-      } catch (error) {
-        failSpinner('Commit failed', error.message);
-      }
+  if (action === 'editor') {
+    try {
+      execSync('git commit', { stdio: 'inherit' });
+      return null; // Commit already handled by git
+    } catch (error) {
+      throw new Error(`Commit failed: ${error.message}`, { cause: error });
     }
-    return trimmedAnswer || suggestedMessage;
-  } catch (error) {
-    rl.close(); // Close on error too
-    throw error; // Re-throw so caller can handle it
+  }
+
+  if (action === 'custom') {
+    const customMessage = await input({
+      message: 'Enter your commit message:',
+      validate: (value) => {
+        if (!value.trim()) {
+          return 'Commit message cannot be empty';
+        }
+        return true;
+      },
+    });
+    return customMessage.trim();
   }
 }
 
+/**
+ * Executes a git commit with the provided message
+ */
 export function executeCommit(message) {
+  if (!message || typeof message !== 'string') {
+    failSpinner('Invalid commit message');
+    process.exit(1);
+  }
+
   try {
     const escapedMessage = message.replace(/"/g, '\\"');
     execSync(`git commit -m "${escapedMessage}"`, {
@@ -45,31 +73,5 @@ export function executeCommit(message) {
   } catch (error) {
     failSpinner(`Commit failed: ${error.message}`);
     process.exit(1);
-  }
-}
-
-export function openEditorForMessage() {
-  const tempFile = join(tmpdir(), `COMMIT_EDITMSG_${Date.now()}`);
-
-  try {
-    const editor = process.env.EDITOR || process.env.VISUAL || 'vi';
-    execSync(`${editor} ${tempFile}`, { stdio: 'inherit' });
-
-    const finalMessage = readFileSync(tempFile, 'utf-8').trim();
-    unlinkSync(tempFile);
-
-    if (!finalMessage) {
-      logger.log('\nEmpty commit message. Commit cancelled.');
-      return null;
-    }
-
-    return finalMessage;
-  } catch (error) {
-    try {
-      unlinkSync(tempFile);
-    } catch {
-      // Ignore cleanup errors
-    }
-    throw error;
   }
 }
