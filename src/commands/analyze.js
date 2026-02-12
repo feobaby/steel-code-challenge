@@ -16,7 +16,7 @@ import {
 
 export async function analyzeAction(options) {
   const { url } = options;
-  const count = 50;
+  const count = 1;
 
   try {
     startSpinner('Fetching commits...');

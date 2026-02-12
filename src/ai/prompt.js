@@ -30,3 +30,18 @@ INSTRUCTIONS:
 
 Return the data according to the defined schema.`;
 };
+
+
+export const WRITE_BETTER_COMMIT_MESSAGE_PROMPT = `You are a git commit message expert. Analyze the staged changes and suggest a well-formatted conventional commit message.
+
+Format:
+<type>(<scope>): <subject>
+
+<body with bullet points>
+
+Rules:
+- Use conventional commit types: feat, fix, refactor, docs, style, test, chore
+- Keep subject under 50 characters
+- Use imperative mood ("add" not "added")
+- Body bullets should be concise and specific
+- Focus on WHAT changed and WHY, not HOW`;

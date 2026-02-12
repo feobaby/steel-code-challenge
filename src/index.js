@@ -12,7 +12,7 @@ program
 program
   .option('-a, --analyze', 'Review commit history')
   .option('-u, --url <url>', 'Remote repository URL to analyze')
-  .option('-w, --write', 'Generate AI-powered commit message for staged changes')
+  .option('-w, --write', 'Generate AI-powered commit message for staged changes');
 
 program.parse();
 
