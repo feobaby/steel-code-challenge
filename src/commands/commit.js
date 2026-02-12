@@ -14,7 +14,7 @@ export function promptForCommitMessage(rl, suggestedMessage) {
 
         const trimmedAnswer = answer.trim();
 
-        if (trimmedAnswer.toLowerCase() === 'edit') {
+        if (trimmedAnswer.toLowerCase() === 'git commit') {
           try {
             const editedMessage = openEditorForMessage(suggestedMessage);
             if (editedMessage) {
