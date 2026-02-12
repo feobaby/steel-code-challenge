@@ -10,7 +10,6 @@ import {
 } from '../utils/spinner.js';
 import { getStagedChanges } from '../ai/service.js';
 import { logger } from '../utils/logger.js';
-// import { THICK_LINE } from '../render/header.js';
 import readline from 'readline';
 
 export async function analyzeStaged() {
