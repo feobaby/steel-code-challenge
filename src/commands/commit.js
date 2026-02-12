@@ -9,32 +9,30 @@ import { createInterface } from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 
 export async function promptForCommitMessage(suggestedMessage) {
-  // Create the interface using the promises API
   const rl = createInterface({ input, output });
-
+  
   try {
-    // No more callbacks! Just await the result.
-    const answer = await rl.question('Press Enter to accept, or type your own message:\n> ');
-    rl.close();
-
+    const answer = await rl.question(
+      'Press Enter to accept, type your message, or type "edit" to open git editor:\n> '
+    );
+    
     const trimmedAnswer = answer.trim();
-
-    // 1. Check for editor trigger
-    if (trimmedAnswer.toLowerCase() === 'git commit') {
-      const editedMessage = openEditorForMessage(suggestedMessage);
-      if (!editedMessage) {
-        process.exit(0); // Match your original exit logic
+    
+    // Check for editor trigger
+    if (trimmedAnswer.toLowerCase() === 'edit') {
+      try {
+        execSync('git commit', { stdio: 'inherit' });
+        return null; // Indicates commit was handled by git
+      } catch (error) {
+        throw new Error(`Commit failed: ${error.message}`, { cause: error });
       }
-      return editedMessage;
     }
-
-    // 2. Return input or fallback to suggestion
-    // (This one line replaces your if/else block)
+    
+    // Return input or fallback to suggestion
     return trimmedAnswer || suggestedMessage;
-
-  } catch (error) {
-    rl.close();
-    throw error; // Let the caller handle the error
+    
+  } finally {
+    rl.close(); // Always close, even if there's an error
   }
 }
 
