@@ -10,32 +10,29 @@ import { stdin as input, stdout as output } from 'node:process';
 
 export async function promptForCommitMessage(suggestedMessage) {
   const rl = createInterface({ input, output });
-  
+
   try {
     const answer = await rl.question(
-      'Press Enter to accept, type your message, or type "edit" to open git editor:\n> '
+      'Press Enter to accept, or type your own message:\n> ',
     );
-    
+    rl.close(); // Close immediately after getting answer
+
     const trimmedAnswer = answer.trim();
-    
-    // Check for editor trigger
-    if (trimmedAnswer.toLowerCase() === 'edit') {
+
+    if (trimmedAnswer.toLowerCase() === 'git commit') {
       try {
         execSync('git commit', { stdio: 'inherit' });
-        return null; // Indicates commit was handled by git
+        return null;
       } catch (error) {
-        throw new Error(`Commit failed: ${error.message}`, { cause: error });
+        failSpinner('Commit failed', error.message);
       }
     }
-    
-    // Return input or fallback to suggestion
     return trimmedAnswer || suggestedMessage;
-    
-  } finally {
-    rl.close(); // Always close, even if there's an error
+  } catch (error) {
+    rl.close(); // Close on error too
+    throw error; // Re-throw so caller can handle it
   }
 }
-
 
 export function executeCommit(message) {
   try {
