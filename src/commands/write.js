@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { writeFileSync, readFileSync, unlinkSync } from 'fs';
+import { readFileSync, unlinkSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import {
@@ -10,7 +10,7 @@ import {
 } from '../utils/spinner.js';
 import { getStagedChanges } from '../ai/service.js';
 import { logger } from '../utils/logger.js';
-import { THICK_LINE } from '../render/header.js';
+// import { THICK_LINE } from '../render/header.js';
 import readline from 'readline';
 
 export async function analyzeStaged() {
@@ -22,7 +22,7 @@ export async function analyzeStaged() {
     result.changes?.forEach((change) => console.log(`- ${change}`));
     
     logger.log('\nSuggested commit message:');
-    logger.log(`\n${THICK_LINE}`);
+    // logger.log(`\n${THICK_LINE}`);
     logger.log(result.message);
     logger.log('━'.repeat(30));
     stopSpinner();
@@ -32,9 +32,9 @@ export async function analyzeStaged() {
       output: process.stdout,
     });
 
-    return new Promise((resolve) => {
+ return new Promise((resolve) => {
       rl.question(
-        logger.log('\nPress Enter to accept, or type your own message (press Enter twice to finish):'),
+        'Press Enter to accept, or type your own message:\n> ',
         (answer) => {
           rl.close();
           
@@ -44,8 +44,8 @@ export async function analyzeStaged() {
           if (trimmedAnswer.toLowerCase() === 'edit') {
             const tempFile = join(tmpdir(), `COMMIT_EDITMSG_${Date.now()}`);
             
-            // Write suggested message to temp file
-            writeFileSync(tempFile, result.message);
+            // // Write suggested message to temp file
+            // writeFileSync(tempFile, result.message);
             
             try {
               // Open editor (respects EDITOR env var, falls back to vi/vim/nano)
