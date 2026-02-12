@@ -5,34 +5,37 @@ import { join } from 'path';
 import { succeedSpinner, failSpinner } from '../utils/spinner.js';
 import { logger } from '../utils/logger.js';
 
-export function promptForCommitMessage(rl, suggestedMessage) {
-  return new Promise((resolve, reject) => {
-    rl.question(
-      'Press Enter to accept, or type your own message:\n> ',
-      (answer) => {
-        rl.close();
+import { createInterface } from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
 
-        const trimmedAnswer = answer.trim();
+export async function promptForCommitMessage(suggestedMessage) {
+  // Create the interface using the promises API
+  const rl = createInterface({ input, output });
 
-        if (trimmedAnswer.toLowerCase() === 'git commit') {
-          try {
-            const editedMessage = openEditorForMessage(suggestedMessage);
-            if (editedMessage) {
-              resolve(editedMessage);
-            } else {
-              process.exit(0);
-            }
-          } catch (error) {
-            reject(error);
-          }
-        } else if (trimmedAnswer === '') {
-          resolve(suggestedMessage);
-        } else {
-          resolve(trimmedAnswer);
-        }
-      },
-    );
-  });
+  try {
+    // No more callbacks! Just await the result.
+    const answer = await rl.question('Press Enter to accept, or type your own message:\n> ');
+    rl.close();
+
+    const trimmedAnswer = answer.trim();
+
+    // 1. Check for editor trigger
+    if (trimmedAnswer.toLowerCase() === 'git commit') {
+      const editedMessage = openEditorForMessage(suggestedMessage);
+      if (!editedMessage) {
+        process.exit(0); // Match your original exit logic
+      }
+      return editedMessage;
+    }
+
+    // 2. Return input or fallback to suggestion
+    // (This one line replaces your if/else block)
+    return trimmedAnswer || suggestedMessage;
+
+  } catch (error) {
+    rl.close();
+    throw error; // Let the caller handle the error
+  }
 }
 
 
