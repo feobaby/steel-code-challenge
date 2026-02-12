@@ -34,7 +34,7 @@ export async function analyzeStaged() {
 
     return new Promise((resolve) => {
       rl.question(
-        '\nOptions:\n  1. Press Enter to accept\n  2. Type a message (single line only)\n  3. Type "edit" to open in editor\n> ',
+        logger.log('\nPress Enter to accept, or type your own message (press Enter twice to finish):'),
         (answer) => {
           rl.close();
           
