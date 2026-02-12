@@ -53,8 +53,8 @@ export async function getRemoteCommits(url, count) {
 
 export function getStagedDiff() {
   try {
-    const diff = execSync('git diff --staged', { encoding: 'utf-8' });
-    if (!diff.trim()) {
+    const gitDiff = execSync('git diff --staged', { encoding: 'utf-8' });
+    if (!gitDiff.trim()) {
       failSpinner('No staged changes found. Try using `git add` first.');
       process.exit(1);
     }
@@ -64,8 +64,7 @@ export function getStagedDiff() {
     const summary = lines[lines.length - 1] || 'unknown changes';
 
     logger.log(`Analyzing staged changes... (${summary.trim()})\n`);
-
-    return diff;
+    return gitDiff;
   } catch (error) {
     failSpinner('Failed to get staged diff.');
     logger.error(error.message);
