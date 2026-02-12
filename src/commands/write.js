@@ -21,7 +21,6 @@ export async function analyzeStaged() {
     result.changes?.forEach((change) => console.log(`- ${change}`));
     
     logger.log('\nSuggested commit message:');
-    // logger.log(`\n${THICK_LINE}`);
     logger.log(result.message);
     logger.log('━'.repeat(30));
     stopSpinner();
