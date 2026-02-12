@@ -31,7 +31,6 @@ INSTRUCTIONS:
 Return the data according to the defined schema.`;
 };
 
-
 export const WRITE_BETTER_COMMIT_MESSAGE_PROMPT = `You are a git commit message expert. Analyze the staged changes and suggest a well-formatted conventional commit message.
 
 Format:

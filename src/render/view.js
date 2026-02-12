@@ -13,3 +13,18 @@ export function renderAnalysis(view) {
   renderHeader(themeSections.stats.icon, themeSections.stats.title);
   renderStats(view.stats);
 }
+
+import { getStagedChanges } from '../ai/service.js';
+import { logger } from '../utils/logger.js';
+import { THICK_LINE } from '../render/header.js';
+
+export async function renderWrite() {
+  const result = await getStagedChanges();
+  logger.log('\nChanges detected:');
+  result.changes?.forEach((change) => console.log(`- ${change}`));
+
+  logger.log('\nSuggested commit message:');
+  logger.log(`\n${THICK_LINE}`);
+  logger.log(result.message);
+  logger.log('━'.repeat(30));
+}

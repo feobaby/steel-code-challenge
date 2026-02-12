@@ -41,7 +41,6 @@ export async function analyzeCommits(messages, onProgress) {
   return result;
 }
 
-
 export async function getStagedChanges() {
   // Get staged diff
   const diff = execSync('git diff --staged', { encoding: 'utf-8' });
@@ -66,8 +65,10 @@ export async function getStagedChanges() {
     output: Output.object({
       schema: z.object({
         changes: z.array(z.string()).describe('List of detected changes'),
-        message: z.string().describe('Suggested commit message in conventional format')
-      })
+        message: z
+          .string()
+          .describe('Suggested commit message in conventional format'),
+      }),
     }),
     maxTokens: 1000,
   });
