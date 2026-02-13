@@ -89,7 +89,7 @@ _**Key things to note for command 3**_:
 
 - When processing multiple requests, I wanted to balance _speed_, _complexity_, and _API limits_. Initially, running all 50 commits felt slow and generating an analysis was taking quite long (35s >). So to improve performance, I batched the commits into groups of 4 and used `p-limit` to control concurrency.
 - I didn’t want all 4 batches running at the same time, as that could overload the model, so I used `p-limit` to configure how the batches ran concurrently.
-- With this setup, generating an analysis now takes about 5 – 6 seconds.
+- With this setup, generating an analysis now takes about 5 – 7 seconds.
 - The timeline looks like this:
   ```
   [Batch 1, Batch 2] -> finish -> [Batch 3, Batch 4] -> end

@@ -20,7 +20,6 @@ export async function analyzeAction(options) {
       logger.error(chalk.yellow('No commits found to analyze.'));
       return;
     }
-
     const batches = createBatches(messages);
     const results = await analyzeInParallel(batches);
 

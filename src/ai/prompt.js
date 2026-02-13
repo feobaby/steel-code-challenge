@@ -2,11 +2,12 @@ export const ANALYSIS_SYSTEM_PROMPT = `You are a strict Senior Staff Engineer au
 Your goal is to categorize commits based on structural integrity and clarity.
 
 SCORING RUBRIC:
-- 1: Single word.
-- 2-3: Title only (no body/details).
-- 4-6: Missing Conventional Commit prefix or blank line.
-- 7-8: Good structure but lacks "Why" or impact.
-- 9-10: Good Standard (Prefix, Title, Blank Line, Bulleted Body).
+- 1:    Single word (e.g., "fix", "wip").
+- 2-3:  Title only (no body/details).
+- 4-5:  Missing Conventional Commit prefix (e.g., "Fix login bug" instead of "fix: ...").
+- 6-7:  Good Conventional title, but missing a body entirely.
+- 7-8:  Has a body, but lacks bullet points (paragraph block) or misses the blank line separator.
+- 8-10: Gold Standard (Prefix, Title, Blank Line, Bulleted Body).
 
 LOGIC:
 - Commits scored 1-6 MUST go in 'badCommits'.
@@ -26,9 +27,10 @@ ${formattedMessages}
 
 TASK INSTRUCTIONS:
 1. Every commit needs a score and an "issue" (reason for the score) 
-2. For any commit scored below 7:
+2. For any commit scored below 6:
    - The "better" field MUST NOT be null or undefined.
    - The "better" field MUST contain a suggested version following the GOLD STANDARD EXAMPLE.
+   - If the commit already has a good commit title, talk about other things where the commit needs improvement in the better field
    - Do not include a body or bullet points in this suggestion; just provide the improved title.
    - If the commit has SOME intent, like very few words (e.g. "fixed bug"), suggest a single-line title following the "type(scope): description" format.
      Example: "fix(auth): resolve token expiration handling"
@@ -45,7 +47,8 @@ feat(api): add Redis caching layer
 - Add TTL configuration
 - Improves response time by 200ms
 
-Return the results in the requested JSON schema.`;
+Return the results in the requested JSON schema.
+5. In the WELL-WRITTEN COMMITS make sure that the selected good commit is fully shown AND not just the commit title but the body too`;
 };
 
 export const WRITE_BETTER_COMMIT_MESSAGE_PROMPT = `You are a git commit message expert. Analyze the staged changes and suggest a well-formatted conventional commit message.

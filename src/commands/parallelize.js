@@ -5,9 +5,7 @@ import ora from 'ora';
 export async function analyzeInParallel(batches) {
   const limit = pLimit(2);
 
-  const spinner = ora(
-    'Processing 50 commits (0/' + batches.length + ')',
-  ).start();
+  const spinner = ora('Analyzing last 50 commits...').start();
 
   let completed = 0;
 
@@ -23,6 +21,9 @@ export async function analyzeInParallel(batches) {
   );
   spinner.stop();
   process.stdout.write('\r\x1b[K');
-
+  spinner.stopAndPersist({
+    symbol: '',
+    text: 'Analyzing last 50 commits...',
+  });
   return results.flat();
 }
