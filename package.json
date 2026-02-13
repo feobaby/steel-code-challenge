@@ -6,24 +6,28 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/cli.js"
+    "format": "prettier . --write",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ai": "^6.0.78",
-    "boxen": "^8.0.1",
+    "@ai-sdk/google": "^3.0.24",
+    "ai": "^6.0.79",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
     "dotenv": "^17.2.4",
-    "inquirer": "^13.2.2",
-    "openai": "^6.21.0",
     "ora": "^9.3.0",
+    "p-limit": "^7.3.0",
+    "simple-git": "^3.30.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "eslint": "^10.0.0",
-    "prettier": "^3.8.1"
+    "globals": "^17.3.0",
+    "prettier": "3.8.1"
   }
 }
