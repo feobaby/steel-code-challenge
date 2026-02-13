@@ -9,6 +9,5 @@ export function createBatches(messages, batchCount = 4) {
       batches.push(messages.slice(start, end));
     }
   }
-
   return batches;
 }

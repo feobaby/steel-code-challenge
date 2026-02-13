@@ -19,13 +19,11 @@ function renderHeader(icon, title, hasBottomPadding = true) {
 }
 function renderCommit(c, type) {
   const scoreColor = type === 'bad' ? chalk.yellow : chalk.cyan;
-
   const indent = ' '.repeat(9);
 
   const formattedMessage = c.message.replace(/\n/g, `\n${indent}`);
 
   logger.log(`${chalk.bold('Commit:')} "${chalk.white(formattedMessage)}"`);
-
   logger.log(`${chalk.bold('Score:')}  ${scoreColor(`${c.score}/10`)}`);
 
   if (type === 'bad') {
@@ -45,15 +43,12 @@ function renderStats(stats) {
 }
 
 export function renderAnalysis(view) {
-  // Bad Commits - Keeps original padding
   renderHeader(themeSections.bad.icon, themeSections.bad.title);
   view.bad.forEach((c) => renderCommit(c, 'bad'));
 
-  // Good Commits - Keeps original padding
   renderHeader(themeSections.good.icon, themeSections.good.title);
   view.good.forEach((c) => renderCommit(c, 'good'));
 
-  // Stats - PASS FALSE to remove the space!
   renderHeader(themeSections.stats.icon, themeSections.stats.title, false);
   renderStats(view.stats);
 }

@@ -12,7 +12,7 @@ export const AnalysisSchema = z.object({
       message: z.string(),
       score: z.number(),
       issue: z.string(),
-      better: z.string(), // Forced requirement
+      better: z.string(),
     }),
   ),
 
@@ -26,8 +26,6 @@ export const AnalysisSchema = z.object({
 });
 
 export const writeCommitSchema = z.object({
-  changes: z.array(z.string()).describe('List of detected changes'),
-  message: z
-    .string()
-    .describe('Suggested commit message in conventional format'),
+  changes: z.array(z.string()),
+  message: z.string(),
 });
