@@ -6,7 +6,7 @@ SCORING RUBRIC:
 - 2-3: Title only (no body/details).
 - 4-6: Missing Conventional Commit prefix or blank line.
 - 7-8: Good structure but lacks "Why" or impact.
-- 9-10: Gold Standard (Prefix, Title, Blank Line, Bulleted Body).
+- 9-10: Good Standard (Prefix, Title, Blank Line, Bulleted Body).
 
 LOGIC:
 - Commits scored 1-6 MUST go in 'badCommits'.
@@ -37,7 +37,7 @@ TASK INSTRUCTIONS:
 3. CRITICAL: In your JSON response, the "message" field for good commits MUST contain the FULL original text of the commit (Subject + Newlines + Body), exactly as it appears in the input. Do not summarize or truncate it.
 4. Use the following example as your blueprint for "Better" suggestions:
 
-GOLD STANDARD EXAMPLE:
+GOOD STANDARD EXAMPLE:
 feat(api): add Redis caching layer
 
 - Implement cache for read endpoints

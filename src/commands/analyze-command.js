@@ -10,7 +10,7 @@ import { startSpinner, stopSpinner } from '../utils/spinner.js';
 
 export async function analyzeAction(options) {
   const { url } = options;
-  const count = 10;
+  const count = 50;
 
   try {
     startSpinner('Currently fetching and analyzing your last 50 commits...');
