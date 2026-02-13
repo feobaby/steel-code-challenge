@@ -17,8 +17,7 @@ Funmilayo Olaiya
 7. [Dotenv](https://github.com/motdotla/dotenv) - Loads environment variables from .env file for API key management
 8. [Ora](https://github.com/sindresorhus/ora) - Elegant terminal spinners for loading states and user feedback
 9. [p-limit](https://github.com/sindresorhus/p-limit) - Concurrency control for limiting parallel async operations
-10. [Simple-git](https://github.com/steveukx/git-js) - Lightweight interface for running git commands programmatically
-11. [ESLint](https://github.com/eslint/eslint) & [Prettier](https://github.com/prettier/prettier) - Linting and code formatting tools for maintaining consistent and clean code quality across the project
+10. [ESLint](https://github.com/eslint/eslint) & [Prettier](https://github.com/prettier/prettier) - Linting and code formatting tools for maintaining consistent and clean code quality across the project
 
 ## 🚀 Get Started Quickly
 
@@ -28,9 +27,9 @@ Funmilayo Olaiya
 4.  Create a `.env` and add the follwoing:
 
 ```
-GEMINI_API_KEY=
+GEMINI_AI_API_KEY==
 
-# The key is sent in Hussein's email
+# The key is sent in Hussien's email
 ```
 
 ## ✅ Test the Commands:
@@ -41,17 +40,20 @@ GEMINI_API_KEY=
 node commit_critic.js --analyze
 ```
 
-2. To analyze the commits of the remote repository, run the command:
+2. To analyze any commits of a remote repository, run the command:
 
 ```
 node commit_critic.js --analyze --url="https://github.com/steel-dev/steel-browser"
 ```
 
-2. To analyze the commits of the current/local repository, run the follwing command:
+3.  To generate a commit or write yours, run the following command:
 
 ```
 node commit_critic.js --write
 ```
+
+### Key things to not for command 3:
+- 
 
 #### For the codebase:
 
