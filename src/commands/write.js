@@ -1,12 +1,10 @@
-import {
-  failSpinner,
-  startSpinner,
-  stopSpinner,
-  succeedSpinner,
-} from '../utils/spinner.js';
-import { writeCommits } from '../ai/service.js';
+import { startSpinner, stopSpinner, succeedSpinner } from '../utils/spinner.js';
+import { writeCommits } from '../ai/commit.js';
 import { logger } from '../utils/logger.js';
-import { executeCommit, promptForCommitMessage } from './commit.js';
+import {
+  executeCommit,
+  promptForCommitMessage,
+} from '../commands/write-command.js';
 
 export async function analyzeStaged() {
   try {
@@ -30,10 +28,10 @@ export async function analyzeStaged() {
       succeedSpinner('Commit Successful!');
     }
   } catch (error) {
-    failSpinner(
+    logger.error(
       'Failed to generate commit message. Try again or write manually.',
     );
-    logger.log(error.message);
+
     throw error;
   }
 }

@@ -19,9 +19,9 @@ export function succeedSpinner(text) {
   if (spinner) spinner.succeed(text);
 }
 
-export function failSpinner(text) {
-  if (spinner) spinner.fail(text);
-}
+// export function failSpinner(text) {
+//   if (spinner) spinner.fail(text);
+// }
 
 export function stopSpinner() {
   if (spinner) spinner.stop();

@@ -1,4 +1,4 @@
-import { analyzeCommits } from '../ai/service.js';
+import { analyzeCommits } from '../ai/commit.js';
 import { infoSpinner } from '../utils/spinner.js';
 
 import pLimit from 'p-limit';

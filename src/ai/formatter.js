@@ -12,7 +12,7 @@ export function prepareAnalysisView(result, total) {
       why: c.why,
     })),
     stats: {
-      average: result.stats.averageScore, // Changed key name to 'average'
+      average: result.stats.averageScore,
       vague: `${Math.round((result.stats.vagueCommits / 100) * total)} (${result.stats.vagueCommits}%)`,
       oneWord: `${Math.round((result.stats.oneWordCommits / 100) * total)} (${result.stats.oneWordCommits}%)`,
     },

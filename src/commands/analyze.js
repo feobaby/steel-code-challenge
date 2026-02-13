@@ -8,7 +8,6 @@ import { analyzeInParallel } from './parallelize.js';
 import { mergeResults } from './merging.js';
 import {
   startSpinner,
-  failSpinner,
   infoSpinner,
   stopSpinner,
   updateSpinner,
@@ -40,7 +39,6 @@ export async function analyzeAction(options) {
 
     renderAnalysis(viewData);
   } catch (error) {
-    failSpinner(chalk.red('Analysis failed'));
-    logger.error(error.message);
+    logger.error(`Analysis failed. ${error.message}`);
   }
 }

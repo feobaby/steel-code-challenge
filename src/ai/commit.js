@@ -2,7 +2,7 @@ import { streamText, Output } from 'ai';
 import { model } from './config.js';
 import { AnalysisSchema, writeCommitSchema } from './schema.js';
 import { ANALYSIS_SYSTEM_PROMPT, getAnalysisPrompt } from './prompt.js';
-import { WRITE_BETTER_COMMIT_MESSAGE_PROMPT } from '../ai/prompt.js';
+import { WRITE_BETTER_COMMIT_MESSAGE_PROMPT } from './prompt.js';
 import { getStagedDiff } from '../services/git.js';
 
 export async function analyzeCommits(messages, onProgress) {

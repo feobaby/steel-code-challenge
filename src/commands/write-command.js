@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import { readFileSync, unlinkSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { succeedSpinner, failSpinner } from '../utils/spinner.js';
+import { succeedSpinner } from '../utils/spinner.js';
 import { logger } from '../utils/logger.js';
 
 import { createInterface } from 'node:readline/promises';
@@ -24,7 +24,7 @@ export async function promptForCommitMessage(suggestedMessage) {
         execSync('git commit', { stdio: 'inherit' });
         return null;
       } catch (error) {
-        failSpinner('Commit failed', error.message);
+        logger.error(`Commit failed: ${error.message}`);
       }
     }
     return userSuggestedMessage || suggestedMessage;
@@ -42,7 +42,7 @@ export function executeCommit(message) {
     });
     succeedSpinner('Commit Successful!');
   } catch (error) {
-    failSpinner(`Commit failed: ${error.message}`);
+    logger.error(`Commit failed: ${error.message}`);
     process.exit(1);
   }
 }

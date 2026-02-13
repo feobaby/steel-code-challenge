@@ -1,9 +1,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs/promises';
-import chalk from 'chalk';
 import { execSync } from 'child_process';
-import { failSpinner } from '../utils/spinner.js';
 import { logger } from '../utils/logger.js';
 
 export function getLocalCommits(count) {
@@ -17,8 +15,7 @@ export function getLocalCommits(count) {
       .map((msg) => msg.trim());
     return commits;
   } catch (error) {
-    failSpinner(chalk.red('Failed to fetch local commits.'));
-    logger.error(error.message);
+    logger.error('Failed to fetch local commits.', error.message);
     throw error;
   }
 }
@@ -43,8 +40,7 @@ export async function getRemoteCommits(url, count) {
 
     return commits;
   } catch (error) {
-    failSpinner('Failed to fetch remote commits');
-    logger.error(error.message);
+    logger.error('Failed to fetch remote commits.', error.message);
     throw error;
   } finally {
     await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
@@ -55,7 +51,8 @@ export function getStagedDiff() {
   try {
     const gitDiff = execSync('git diff --staged', { encoding: 'utf-8' });
     if (!gitDiff.trim()) {
-      failSpinner('No staged changes found. Try using `git add` first.');
+      logger.error('No staged changes found. Try using `git add` first.');
+
       process.exit(1);
     }
 
@@ -66,8 +63,8 @@ export function getStagedDiff() {
     logger.log(`Analyzing staged changes... (${summary.trim()})\n`);
     return gitDiff;
   } catch (error) {
-    failSpinner('Failed to get staged diff.');
-    logger.error(error.message);
+    logger.error('Failed to get staged diff.', error.message);
+
     throw error;
   }
 }
