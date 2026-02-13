@@ -8,8 +8,6 @@ export function prepareAnalysisView(result, total) {
       issue: commit.issue,
       better: commit.better,
     }));
-
-  // Show top 1 best commit
   const bestCommits = result.goodCommits
     .sort((a, b) => b.score - a.score)
     .slice(0, 1)
