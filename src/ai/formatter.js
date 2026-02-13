@@ -1,20 +1,30 @@
 export function prepareAnalysisView(result, total) {
+  const worstCommits = result.badCommits
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 2)
+    .map((commit) => ({
+      message: commit.message,
+      score: commit.score,
+      issue: commit.issue,
+      better: commit.better,
+    }));
+
+  // Show top 1 best commit
+  const bestCommits = result.goodCommits
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 1)
+    .map((commit) => ({
+      message: commit.message,
+      score: commit.score,
+      why: commit.why,
+    }));
   return {
-    bad: result.badCommits.map((c) => ({
-      message: c.message,
-      score: c.score,
-      issue: c.issue,
-      better: c.better,
-    })),
-    good: result.goodCommits.map((c) => ({
-      message: c.message,
-      score: c.score,
-      why: c.why,
-    })),
+    bad: worstCommits,
+    good: bestCommits,
     stats: {
       average: result.stats.averageScore,
-      vague: `${Math.round((result.stats.vagueCommits / 100) * total)} (${result.stats.vagueCommits}%)`,
-      oneWord: `${Math.round((result.stats.oneWordCommits / 100) * total)} (${result.stats.oneWordCommits}%)`,
+      vague: `${result.stats.vagueCommits} (${((result.stats.vagueCommits / total) * 100).toFixed(2)}%)`,
+      oneWord: `${result.stats.oneWordCommits} (${((result.stats.oneWordCommits / total) * 100).toFixed(2)}%)`,
     },
   };
 }

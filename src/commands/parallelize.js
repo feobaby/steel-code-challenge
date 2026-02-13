@@ -1,5 +1,5 @@
 import { analyzeCommits } from '../ai/commit.js';
-import { infoSpinner } from '../utils/spinner.js';
+import { logger } from '../utils/logger.js';
 
 import pLimit from 'p-limit';
 
@@ -10,7 +10,7 @@ export async function analyzeInParallel(batches) {
     batches.map((batch, idx) =>
       limit(() =>
         analyzeCommits(batch, ({ badCount, goodCount }) => {
-          infoSpinner(
+          logger.log(
             `Batch ${idx + 1}/${batches.length}: ${badCount + goodCount}/${batch.length} commits`,
           );
         }),

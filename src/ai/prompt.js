@@ -1,34 +1,50 @@
-export const ANALYSIS_SYSTEM_PROMPT = `You are a strict Senior Staff Engineer and Git Expert. 
-Your goal is to enforce high-quality commit standards. 
+export const ANALYSIS_SYSTEM_PROMPT = `You are a strict Senior Staff Engineer auditing Git history.
+Your goal is to categorize commits based on structural integrity and clarity.
 
-CRITERIA FOR SCORING:
-- 1-6 Score: These are POOR or AVERAGE. They lack detail, don't follow conventional commits, or are too brief. Put the worst of these in 'badCommits'.
-- 7-10 Score: These are EXCELLENT. They must be descriptive and follow conventional commits perfectly. Put the best of these in 'goodCommits'.
+SCORING RUBRIC:
+- 1: Single word.
+- 2-3: Title only (no body/details).
+- 4-6: Missing Conventional Commit prefix or blank line.
+- 7-8: Good structure but lacks "Why" or impact.
+- 9-10: Gold Standard (Prefix, Title, Blank Line, Bulleted Body).
 
-Keep ALL feedback under 20 words.`;
+LOGIC:
+- Commits scored 1-6 MUST go in 'badCommits'.
+- Commits scored 7-10 MUST go in 'goodCommits'.
+- Feedback must be under 20 words.`;
 
 export const getAnalysisPrompt = (messages) => {
   const formattedMessages = messages
-    .map((m, i) => {
-      const commitText = typeof m === 'object' ? m.message : m;
-
-      return `[COMMIT #${i + 1} START]\n${commitText}\n[COMMIT #${i + 1} END]`;
-    })
+    .map(
+      (m, i) => `[COMMIT #${i + 1}]\n${typeof m === 'object' ? m.message : m}`,
+    )
     .join('\n\n');
 
-  return `Analyze these ${messages.length} commit messages.
-  
-  COMMITS TO EVALUATE:
-  ${formattedMessages}
+  return `Analyze these ${messages.length} commits:
 
-INSTRUCTIONS:
-1. If a commit is just a title, it should rarely score above a 6.
-2. In the "Better" field for bad commits, ALWAYS provide an example of what they could do better.
-3. In the "Why it's good" field for good commits, specifically mention if they used a body/bullet points correctly.
-4. If NO commits have bodies, give them all lower scores and explain that they lack detail.
-5. If commits have a good title and a good body, they should score 7 or above, depending on the level of accuracy
+${formattedMessages}
 
-Return the data according to the defined schema.`;
+TASK INSTRUCTIONS:
+1. Every commit needs a score and an "issue" (reason for the score) 
+2. For any commit scored below 7:
+   - The "better" field MUST NOT be null or undefined.
+   - The "better" field MUST contain a suggested version following the GOLD STANDARD EXAMPLE.
+   - Do not include a body or bullet points in this suggestion; just provide the improved title.
+   - If the commit has SOME intent, like very few words (e.g., "fixed bug"), suggest a single-line title following the "type(scope): description" format.
+     Example: "fix(auth): resolve token expiration handling"
+   - If the commit is just a single word or placeholder (e.g. "wip"), the "better" field MUST be: "Describe what you're working on"
+   - Do not include a body or bullet points in the "better" field.
+3. CRITICAL: In your JSON response, the "message" field for good commits MUST contain the FULL original text of the commit (Subject + Newlines + Body), exactly as it appears in the input. Do not summarize or truncate it.
+4. Use the following example as your blueprint for "Better" suggestions:
+
+GOLD STANDARD EXAMPLE:
+feat(api): add Redis caching layer
+
+- Implement cache for read endpoints
+- Add TTL configuration
+- Improves response time by 200ms
+
+Return the results in the requested JSON schema.`;
 };
 
 export const WRITE_BETTER_COMMIT_MESSAGE_PROMPT = `You are a git commit message expert. Analyze the staged changes and suggest a well-formatted conventional commit message.
@@ -39,7 +55,7 @@ Format:
 <body with bullet points>
 
 Rules:
-- Use conventional commit types: feat, fix, refactor, docs, style, test, chore
+- Use conventional commit types: feat, fix, refactor, docs, style, test, chore, ci, perf, revert
 - Keep subject under 50 characters
 - Use imperative mood ("add" not "added")
 - Body bullets should be concise and specific

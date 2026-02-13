@@ -1,36 +1,28 @@
 import { z } from 'zod';
 
 export const AnalysisSchema = z.object({
-  stats: z
-    .object({
-      averageScore: z.coerce.number().catch(0),
-      vagueCommits: z.coerce.number().catch(0),
-      oneWordCommits: z.coerce.number().catch(0),
-    })
-    .default({ averageScore: 0, vagueCommits: 0, oneWordCommits: 0 }),
+  stats: z.object({
+    averageScore: z.number(),
+    vagueCommits: z.number(),
+    oneWordCommits: z.number(),
+  }),
 
-  badCommits: z
-    .array(
-      z.object({
-        message: z.string().default('Unknown'),
-        score: z.coerce.number().catch(0),
-        issue: z.string().default('General issue'),
-        better: z.string().default('Improve clarity'),
-      }),
-    )
-    .catch([])
-    .default([]),
+  badCommits: z.array(
+    z.object({
+      message: z.string(),
+      score: z.number(),
+      issue: z.string(),
+      better: z.string(), // Forced requirement
+    }),
+  ),
 
-  goodCommits: z
-    .array(
-      z.object({
-        message: z.string().default('Unknown'),
-        score: z.coerce.number().catch(10),
-        why: z.string().default('Good structure'),
-      }),
-    )
-    .catch([])
-    .default([]),
+  goodCommits: z.array(
+    z.object({
+      message: z.string(),
+      score: z.number(),
+      why: z.string(),
+    }),
+  ),
 });
 
 export const writeCommitSchema = z.object({

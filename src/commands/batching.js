@@ -1,5 +1,5 @@
-export function createBatches(messages, batchCount = 5) {
-  const batchSize = Math.ceil(messages.length / batchCount);
+export function createBatches(messages, batchCount = 4) {
+  const batchSize = Math.round(messages.length / batchCount);
   const batches = [];
 
   for (let i = 0; i < batchCount; i++) {

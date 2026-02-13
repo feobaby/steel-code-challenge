@@ -10,23 +10,23 @@ const themeSections = {
   stats: { icon: '📊', title: 'YOUR STATS' },
 };
 
-function renderHeader(icon, title) {
+function renderHeader(icon, title, hasBottomPadding = true) {
   logger.log(`\n${THICK_LINE}`);
   logger.log(chalk.bold(`${icon} ${title}`));
-  logger.log(`${THICK_LINE}\n`);
-}
 
-function renderStats(stats) {
-  logger.log(`${chalk.bold('Average score:')} ${stats.average}/10`);
-  logger.log(`${chalk.bold('Vague commits:')} ${stats.vague}`);
-  logger.log(`${chalk.bold('One-word commits:')} ${stats.oneWord}\n`);
+  const bottomLine = hasBottomPadding ? `${THICK_LINE}\n` : THICK_LINE;
+  logger.log(bottomLine);
 }
-
 function renderCommit(c, type) {
   const scoreColor = type === 'bad' ? chalk.yellow : chalk.cyan;
 
-  logger.log(`${chalk.bold('Commit:')} "${chalk.white(c.message)}"`);
-  logger.log(`${chalk.bold('Score:')}  ${scoreColor(c.score)}`);
+  const indent = ' '.repeat(9);
+
+  const formattedMessage = c.message.replace(/\n/g, `\n${indent}`);
+
+  logger.log(`${chalk.bold('Commit:')} "${chalk.white(formattedMessage)}"`);
+
+  logger.log(`${chalk.bold('Score:')}  ${scoreColor(`${c.score}/10`)}`);
 
   if (type === 'bad') {
     logger.log(`${chalk.bold('Issue:')}  ${c.issue}`);
@@ -37,16 +37,23 @@ function renderCommit(c, type) {
   logger.log('');
 }
 
+function renderStats(stats) {
+  const formattedAvg = Number(stats.average).toFixed(2);
+  logger.log(`${chalk.bold('Average score:')} ${formattedAvg}/10`);
+  logger.log(`${chalk.bold('Vague commits:')} ${stats.vague}`);
+  logger.log(`${chalk.bold('One-word commits:')} ${stats.oneWord}\n`);
+}
+
 export function renderAnalysis(view) {
-  // Bad Commits
+  // Bad Commits - Keeps original padding
   renderHeader(themeSections.bad.icon, themeSections.bad.title);
   view.bad.forEach((c) => renderCommit(c, 'bad'));
 
-  // Good Commits
+  // Good Commits - Keeps original padding
   renderHeader(themeSections.good.icon, themeSections.good.title);
   view.good.forEach((c) => renderCommit(c, 'good'));
 
-  // Stats
-  renderHeader(themeSections.stats.icon, themeSections.stats.title);
+  // Stats - PASS FALSE to remove the space!
+  renderHeader(themeSections.stats.icon, themeSections.stats.title, false);
   renderStats(view.stats);
 }

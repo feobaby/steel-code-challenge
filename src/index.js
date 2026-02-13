@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { program } from 'commander';
-import { analyzeAction } from './commands/analyze.js';
+import { analyzeAction } from './commands/analyze-command.js';
 import { analyzeStaged } from './commands/write.js';
 
 program

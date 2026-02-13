@@ -64,7 +64,6 @@ export function getStagedDiff() {
     return gitDiff;
   } catch (error) {
     logger.error('Failed to get staged diff.', error.message);
-
     throw error;
   }
 }
