@@ -22,9 +22,9 @@ Funmilayo Olaiya
 ## 🚀 Get Started Quickly
 
 1.  Usually you should have Git and Node.js installed (mostly should be the latest) on your computer.
-2.  Clone the repo using: https://github.com/feobaby/steel-code-challenge.git and `cd` into the project.
+2.  Clone the repo using: https://github.com/feobaby/steel-code-challenge.git and `cd` into the project: `steel-code-challenge`.
 3.  Install all the dependencies using the command: `npm install`
-4.  Create a `.env` and add the follwoing:
+4.  Create a `.env` file in the base of the folder directory and add the following:
 
 ```
 GEMINI_AI_API_KEY==
@@ -53,9 +53,7 @@ node commit_critic.js --write
 ```
 
 ### Key things to note for command 3:
-Here’s a cleaner version, still in your voice:
-
-- You should typically run `git add .` first. If you forget, no worries — there’s proper error handling and you’ll get a clear error message.
+- You should typically run `git add .` first. If you forget, no worries, there’s proper error handling and you’ll get a clear error message.
 - After running `node commit_critic.js --write`, the AI suggests a commit message in your terminal (usually a well-written one). Just press `Enter` to accept it and it commits automatically.
 - You can also ignore the suggestion and type whatever commit message you want on the new line. It’s basically a one-line commit input you control.
 - Or you can just run `git commit` yourself — it’ll take you straight into your Vim editor so you can write the full commit message however you like.
