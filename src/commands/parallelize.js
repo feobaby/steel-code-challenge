@@ -1,20 +1,31 @@
 import { analyzeCommits } from '../ai/commit.js';
-import { logger } from '../utils/logger.js';
-
 import pLimit from 'p-limit';
+import chalk from 'chalk';
+import * as p from '@clack/prompts';
 
 export async function analyzeInParallel(batches) {
   const limit = pLimit(2);
 
-  return await Promise.all(
-    batches.map((batch, idx) =>
-      limit(() =>
-        analyzeCommits(batch, ({ badCount, goodCount }) => {
-          logger.log(
-            `Batch ${idx + 1}/${batches.length}: ${badCount + goodCount}/${batch.length} commits`,
-          );
-        }),
-      ),
+  p.intro(
+    chalk.green('Currently fetching and analyzing your last 50 commits...'),
+  );
+
+  const progress = p.spinner();
+  progress.start('Processing commits');
+
+  let completed = 0;
+
+  const results = await Promise.all(
+    batches.map((batch) =>
+      limit(async () => {
+        const result = await analyzeCommits(batch);
+        completed++;
+        progress.message(`Processing commits (${completed}/${batches.length})`);
+        return result;
+      }),
     ),
   );
+
+  progress.stop(chalk.green('✔ Done!'));
+  return results.flat();
 }

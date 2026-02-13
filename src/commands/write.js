@@ -1,4 +1,5 @@
-import { startSpinner, stopSpinner, succeedSpinner } from '../utils/spinner.js';
+import ora from 'ora';
+import {  succeedSpinner } from '../utils/spinner.js';
 import { writeCommits } from '../ai/commit.js';
 import { logger } from '../utils/logger.js';
 import {
@@ -8,7 +9,7 @@ import {
 
 export async function analyzeStaged() {
   try {
-    startSpinner('Hold on ...');
+    const spinner = ora('Analyzing staged changes...');
     const result = await writeCommits();
 
     logger.log('\nChanges detected:');
@@ -18,7 +19,7 @@ export async function analyzeStaged() {
     logger.log('━'.repeat(30));
     logger.log(result.message);
     logger.log('━'.repeat(30));
-    stopSpinner();
+       spinner.stop();
 
     const finalMessage = await promptForCommitMessage(result.message);
 
@@ -35,3 +36,4 @@ export async function analyzeStaged() {
     throw error;
   }
 }
+
