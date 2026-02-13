@@ -2,7 +2,6 @@ import { execSync } from 'child_process';
 import { readFileSync, unlinkSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { succeedSpinner } from '../utils/spinner.js';
 import { logger } from '../utils/logger.js';
 
 import { createInterface } from 'node:readline/promises';
@@ -40,7 +39,7 @@ export function executeCommit(message) {
     execSync(`git commit -m "${escapedMessage}"`, {
       stdio: 'inherit',
     });
-    succeedSpinner('Commit Successful!');
+    logger.log('Commit Successful!');
   } catch (error) {
     logger.error(`Commit failed: ${error.message}`);
     process.exit(1);
@@ -66,7 +65,7 @@ export function openEditorForMessage() {
     try {
       unlinkSync(tempFile);
     } catch {
-      // Ignore cleanup errors
+      /* cleanup */
     }
     throw error;
   }

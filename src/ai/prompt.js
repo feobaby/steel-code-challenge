@@ -34,6 +34,7 @@ TASK INSTRUCTIONS:
      Example: "fix(auth): resolve token expiration handling"
    - If the commit is just a single word or placeholder (e.g. "wip"), the "better" field MUST be: "Describe what you're working on"
    - Do not include a body or bullet points in the "better" field.
+   - Bullets should never end with a fullstop
 3. CRITICAL: In your JSON response, the "message" field for good commits MUST contain the FULL original text of the commit (Subject + Newlines + Body), exactly as it appears in the input. Do not summarize or truncate it.
 4. Use the following example as your blueprint for "Better" suggestions:
 
@@ -49,7 +50,12 @@ Return the results in the requested JSON schema.`;
 
 export const WRITE_BETTER_COMMIT_MESSAGE_PROMPT = `You are a git commit message expert. Analyze the staged changes and suggest a well-formatted conventional commit message.
 
-Format:
+Changes Array:
+- List individual file changes as brief descriptions
+- Never end with periods or punctuation
+- Format: "Modified X to do Y" or "Added Z for purpose"
+
+Commit Message Format:
 <type>(<scope>): <subject>
 
 <body with bullet points>
@@ -58,5 +64,6 @@ Rules:
 - Use conventional commit types: feat, fix, refactor, docs, style, test, chore, ci, perf, revert
 - Keep subject under 50 characters
 - Use imperative mood ("add" not "added")
-- Body bullets should be concise and specific
+- There MUST be a body and with bullets which should be concise and specific
+- Bullets should never end with a fullstop
 - Focus on WHAT changed and WHY, not HOW`;

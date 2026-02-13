@@ -1,17 +1,13 @@
 import { analyzeCommits } from '../ai/commit.js';
 import pLimit from 'p-limit';
-import chalk from 'chalk';
-import * as p from '@clack/prompts';
+import ora from 'ora';
 
 export async function analyzeInParallel(batches) {
   const limit = pLimit(2);
 
-  p.intro(
-    chalk.green('Currently fetching and analyzing your last 50 commits...'),
-  );
-
-  const progress = p.spinner();
-  progress.start('Processing commits');
+  const spinner = ora(
+    'Processing 50 commits (0/' + batches.length + ')',
+  ).start();
 
   let completed = 0;
 
@@ -20,12 +16,13 @@ export async function analyzeInParallel(batches) {
       limit(async () => {
         const result = await analyzeCommits(batch);
         completed++;
-        progress.message(`Processing commits (${completed}/${batches.length})`);
+        spinner.text = `Processing commits (${completed}/${batches.length})`;
         return result;
       }),
     ),
   );
+  spinner.stop();
+  process.stdout.write('\r\x1b[K');
 
-  progress.stop(chalk.green('✔ Done!'));
   return results.flat();
 }

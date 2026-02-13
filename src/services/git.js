@@ -52,15 +52,25 @@ export function getStagedDiff() {
     const gitDiff = execSync('git diff --staged', { encoding: 'utf-8' });
     if (!gitDiff.trim()) {
       logger.error('No staged changes found. Try using `git add` first.');
-
       process.exit(1);
     }
 
-    const stats = execSync('git diff --staged --stat', { encoding: 'utf-8' });
-    const lines = stats.split('\n').filter(Boolean);
-    const summary = lines[lines.length - 1] || 'unknown changes';
+    const stats = execSync('git diff --staged --shortstat', {
+      encoding: 'utf-8',
+    });
 
-    logger.log(`Analyzing staged changes... (${summary.trim()})\n`);
+    const filesMatch = stats.match(/(\d+) files? changed/);
+    const insertionsMatch = stats.match(/(\d+) insertions?/);
+    const deletionsMatch = stats.match(/(\d+) deletions?/);
+
+    const files = filesMatch ? filesMatch[1] : '0';
+    const insertions = insertionsMatch ? insertionsMatch[1] : '0';
+    const deletions = deletionsMatch ? deletionsMatch[1] : '0';
+
+    const summary = `${files} file${files === '1' ? '' : 's'} changed, +${insertions} -${deletions} lines`;
+
+    logger.log(`Analyzing staged changes... (${summary})\n`);
+
     return gitDiff;
   } catch (error) {
     logger.error('Failed to get staged diff.', error.message);

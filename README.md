@@ -9,7 +9,7 @@ Funmilayo Olaiya
 1. [Node.js](https://github.com/nodejs/node) - JavaScript runtime for building the CLI application
 2. [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) - Programming language used for the entire codebase
 3. [Zod](https://github.com/colinhacks/zod) - TypeScript-first schema validation for validating AI responses and user inputs
-4. [Vercel AI SDK](https://github.com/vercel/ai) - Unified interface for interacting with AI models (Anthropic Claude) to analyze git changes
+4. [Vercel AI SDK](https://github.com/vercel/ai) - Unified interface for interacting with AI models
 5. [Chalk](https://github.com/chalk/chalk) - Terminal string styling for colorful and formatted console output
 6. [Commander](https://github.com/tj/commander.js) - Command-line interface framework for parsing CLI commands and arguments
 7. [Dotenv](https://github.com/motdotla/dotenv) - Loads environment variables from .env file for API key management
