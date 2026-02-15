@@ -1,5 +1,6 @@
 import os from 'os';
 import path from 'path';
+import chalk from 'chalk';
 import fs from 'fs/promises';
 import { execSync } from 'child_process';
 import { logger } from '../utils/logger.js';
@@ -67,9 +68,14 @@ export function getStagedDiff() {
     const insertions = insertionsMatch ? insertionsMatch[1] : '0';
     const deletions = deletionsMatch ? deletionsMatch[1] : '0';
 
-    const summary = `${files} file${files === '1' ? '' : 's'} changed, +${insertions} -${deletions} lines`;
-
-    logger.log(`Analyzing staged changes... (${summary})\n`);
+    const summary =
+      `${chalk.hex('#d1949e')(files)} file${files === '1' ? '' : 's'} changed, ` +
+      `${chalk.hex('#e7ae3d')('+')}${chalk.hex('#d1949e')(insertions)} ` +
+      `${chalk.hex('#e7ae3d')('-')}${chalk.hex('#d1949e')(deletions)} lines`;
+    logger.log('\n');
+    logger.log(
+      `Analyzing staged changes${chalk.hex('#e7ae3d')('...')} (${summary})\n`,
+    );
 
     return gitDiff;
   } catch (error) {

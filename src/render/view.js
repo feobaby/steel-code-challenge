@@ -3,7 +3,7 @@ import { logger } from '../utils/logger.js';
 
 const LINE_LENGTH = 30;
 const THICK_LINE = '━'.repeat(LINE_LENGTH);
-const changeColumnColor = chalk.hex('#e7ae3d')(':');
+const changeColonColor = chalk.hex('#e7ae3d')(':');
 const changeColorforTen = chalk.hex('#d1949e')(10);
 const changeSlashColor = chalk.hex('#f0efed')('/');
 
@@ -29,10 +29,10 @@ function renderCommit(c, type) {
   const commitColor =
     type === 'bad' ? chalk.hex('#a6c44c') : chalk.hex('#f0efed');
   logger.log(
-    `${chalk.bold('Commit')}${changeColumnColor} "${commitColor(formattedMessageCommit)}"`,
+    `${chalk.bold('Commit')}${changeColonColor} "${commitColor(formattedMessageCommit)}"`,
   );
   logger.log(
-    `${chalk.bold('Score')}${changeColumnColor}  ${chalk.hex('#d1949e')(c.score)}${changeSlashColor}${chalk.hex('#d1949e')(changeColorforTen)}`,
+    `${chalk.bold('Score')}${changeColonColor}  ${chalk.hex('#d1949e')(c.score)}${changeSlashColor}${chalk.hex('#d1949e')(changeColorforTen)}`,
   );
 
   if (type === 'bad') {
@@ -43,10 +43,10 @@ function renderCommit(c, type) {
       ? chalk.hex('#f0efed')
       : chalk.hex('#a6c44c');
     logger.log(
-      `${chalk.bold('Better')}${changeColumnColor} ${betterColor(formattedMessageBetterCommit)}`,
+      `${chalk.bold('Better')}${changeColonColor} ${betterColor(formattedMessageBetterCommit)}`,
     );
   } else {
-    logger.log(`${chalk.bold("Why it's good")}${changeColumnColor} ${c.why}`);
+    logger.log(`${chalk.bold("Why it's good")}${changeColonColor} ${c.why}`);
   }
 
   logger.log('');
@@ -68,15 +68,15 @@ function renderStats(stats) {
   };
 
   logger.log(
-    `${chalk.bold('Average score')}${changeColumnColor} ${changeColorofForFormattedAvg}${changeSlashColor}${chalk.hex('#d1949e')(10)}`,
+    `${chalk.bold('Average score')}${changeColonColor} ${changeColorofForFormattedAvg}${changeSlashColor}${chalk.hex('#d1949e')(10)}`,
   );
 
   logger.log(
-    `${chalk.bold('Vague commits')}${changeColumnColor} ${formatStat(stats.vague)}`,
+    `${chalk.bold('Vague commits')}${changeColonColor} ${formatStat(stats.vague)}`,
   );
 
   logger.log(
-    `${chalk.bold('One-word commits')}${changeColumnColor} ${formatStat(stats.oneWord)}\n`,
+    `${chalk.bold('One-word commits')}${changeColonColor} ${formatStat(stats.oneWord)}\n`,
   );
 }
 

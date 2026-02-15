@@ -4,10 +4,10 @@ Your goal is to categorize commits based on structural integrity and clarity.
 SCORING RUBRIC:
 - 1:    It just consists of a single word OR a very short phrase (e.g., "fix", "wip", "test code").
 - 2-3:  Generic title that does not follow the conventional commit title type (e.g test the write command) and with no bulleted body AND details.
-- 4-5:  It is a good commit but it is missing a conventional and good commit prefix (which are; feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, hotfix, wip, meta) in a commit title and MOST ESPECIALLY if there is no column after the commit title prefix (e.g., "Fix write command bug" instead of "fix: resolve bug in write command)
+- 4-5:  If it is a good commit but it is missing a conventional and good commit prefix in a commit title and MOST ESPECIALLY if there is no colon after the commit title prefix (e.g., "Fix write command bug" instead of "fix: resolve bug in write command)
 - 6-7:  Good Conventional commit title, but missing a body entirely.
 - 7-8:  Has a body, but lacks bullet points explaining what the commit is about or misses the blank line separator between the commit title and body of the commit
-- 8-10: Gold Standard (Prefix, Title, Blank Line THAT is between the commit title and the first line of the commit body, a detailed bulleted Body).
+- 8-10: Good Standard (Prefix, Title, Blank Line THAT is between the commit title and the first line of the commit body, a detailed bulleted Body).
 - If there is a commit title that is good but ends with numbers or bracketed numbers (e.g, fix: update package-lock (#190), fix: update package-lock (#190) (#444)), that is very okay and should score between 6 and 7
 - All feedback must be under 20 words.
 
@@ -15,6 +15,9 @@ LOGIC:
 - Commits scored 1-5 MUST go in 'badCommits'.
 - Commits scored 7-10 MUST go in 'goodCommits'.
 - Feedback must be under 20 words.
+
+CRITICAL:
+- These are the conventional prefixes for a commit title; feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, hotfix, wip, meta
 `;
 
 export const getAnalysisPrompt = (messages) => {

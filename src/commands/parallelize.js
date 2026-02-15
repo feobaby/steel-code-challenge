@@ -5,8 +5,9 @@ import chalk from 'chalk';
 
 export async function analyzeInParallel(batches) {
   const limit = pLimit(2);
-
-  const spinner = ora('Analyzing last 50 commits...').start();
+  const spinner = ora(
+    `Analyzing last ${chalk.hex('#d1949e')(50)} commits...`,
+  ).start();
 
   let completed = 0;
 
@@ -21,7 +22,6 @@ export async function analyzeInParallel(batches) {
     ),
   );
   spinner.stop();
-  process.stdout.write('\r\x1b[K');
   spinner.stopAndPersist({
     symbol: '',
     text: `Analyzing last ${chalk.hex('#d1949e')(50)} commits...`,

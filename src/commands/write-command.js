@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import { readFileSync, unlinkSync } from 'fs';
+import chalk from 'chalk';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { logger } from '../utils/logger.js';
@@ -12,10 +13,9 @@ export async function promptForCommitMessage(suggestedMessage) {
 
   try {
     const answer = await rl.question(
-      'Press Enter to accept, or type your own message:\n> ',
+      `Press Enter to accept, or type your own message:\n${chalk.hex('#e7ae3d')('>')} `,
     );
     rl.close();
-
     const userSuggestedMessage = answer.trim();
 
     if (userSuggestedMessage.toLowerCase() === 'git commit') {

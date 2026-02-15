@@ -91,10 +91,12 @@ _**Key things to note for command 3**_:
 - I didn’t want all 4 batches running at the same time, as that could overload the model, so I used `p-limit` to configure how the batches ran concurrently.
 - With this setup, generating an analysis (MOST especially for remote repos) now takes about 5 to 10 seconds.
 - The timeline looks like this:
+
   ```
   [Batch 1, Batch 2] -> finish -> [Batch 3, Batch 4] -> end
   ```
-- If I had done the batches sequentially, it could have taken more time (about 10s):
+- If I had done the batches sequentially, it could have taken more time (about 16s >):
+
   ```
   [Batch 1] -> [Batch 2] -> [Batch 3] -> [Batch 4] -> end
   ```
