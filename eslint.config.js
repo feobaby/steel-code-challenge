@@ -11,5 +11,16 @@ export default defineConfig([
       sourceType: 'module',
       globals: globals.node,
     },
+    // --- ADD THIS SECTION ---
+    rules: {
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+    },
   },
 ]);

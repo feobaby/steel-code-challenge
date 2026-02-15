@@ -1,6 +1,7 @@
 import { analyzeCommits } from '../ai/commit.js';
 import pLimit from 'p-limit';
 import ora from 'ora';
+import chalk from 'chalk';
 
 export async function analyzeInParallel(batches) {
   const limit = pLimit(2);
@@ -23,9 +24,7 @@ export async function analyzeInParallel(batches) {
   process.stdout.write('\r\x1b[K');
   spinner.stopAndPersist({
     symbol: '',
-    text: 'Analyzing last 50 commits...',
+    text: `Analyzing last ${chalk.hex('#d1949e')(50)} commits...`,
   });
   return results.flat();
 }
-
-
