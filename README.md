@@ -1,4 +1,4 @@
-# steel-code-challenge
+# AI Commit Message Critic
 
 ## 🙋🏾‍♀️ Author
 
@@ -27,7 +27,6 @@ Funmilayo Olaiya
 ```
 GEMINI_AI_API_KEY==
 
-# The key is sent in Hussien's email
 ```
 
 ## ✅ Test the Commands:
@@ -102,5 +101,3 @@ _**Key things to note for command 3**_:
   ```
 
 ---
-
-### This was an excting challenge and thank you very much!
